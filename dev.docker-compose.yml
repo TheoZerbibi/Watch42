@@ -62,18 +62,18 @@ services:
       REDIS_PORT: ${REDIS_PORT}
       REDIS_PASS: ${REDIS_PASS}
       REDIS_URL: ${REDIS_URL}
-    # healthcheck:
-    #   test: ["CMD-SHELL", "wget --spider --quiet http://localhost:${API_PORT}/healthz || exit 1"]
-    #   interval: 30s
-    #   timeout: 10s
-    #   retries: 3
-    #   start_period: 40s
-    # command: sh -c "pnpm db:deploy && pnpm start:dev"
-    command: sh -c "tail -f /dev/null"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider --quiet http://localhost:${API_PORT}/healthz || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    command: sh -c "pnpm start:dev"
+    # command: sh -c "tail -f /dev/null"
     restart: always
     labels:
     - traefik.enable=true
-    - traefik.http.services.api.loadbalancer.server.port=3000
+    - traefik.http.services.api.loadbalancer.server.port=${API_PORT}
     - traefik.http.routers.api.rule=Host(`api.watch42.localhost`)
 
   postgres:
@@ -95,25 +95,6 @@ services:
       interval: 10s
       timeout: 3s
       retries: 3
-    restart: always
-    labels:
-    - traefik.enable=false
-
-
-  redis:
-    image: redis:7.2.1-alpine
-    container_name: redis
-    expose:
-      - '6379'
-    volumes:
-      - redisdata:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      start_period: 1m
-      interval: 5s
-      timeout: 2s
-      retries: 21
-    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASS}
     restart: always
     labels:
     - traefik.enable=false
@@ -143,6 +124,24 @@ services:
         - traefik.enable=true
         - traefik.http.routers.traefik.service=api@internal
         - traefik.http.routers.traefik.rule=Host(`traefik.42watch.localhost`)
+
+  redis:
+    image: redis:7.2.1-alpine
+    container_name: redis
+    expose:
+      - '6379'
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      start_period: 1m
+      interval: 5s
+      timeout: 2s
+      retries: 21
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASS}
+    restart: always
+    labels:
+    - traefik.enable=false
 
 volumes:
   redisdata:
