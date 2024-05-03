@@ -12,10 +12,10 @@ describe('AppController', () => {
 		}).compile();
 	});
 
-	describe('getHello', () => {
-		it('should return "Hello World!"', () => {
+	describe('getAPIDescription', () => {
+		it('should return "Welcome to Watch42 API!"', () => {
 			const appController = app.get(AppController);
-			expect(appController.getHello()).toBe('Hello World!');
+			expect(appController.getAPIDescription()).toBe('Welcome to Watch42 API!');
 		});
 	});
 });
