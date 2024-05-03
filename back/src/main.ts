@@ -6,7 +6,7 @@ import { readFileSync } from 'fs';
 import { config } from './config/config';
 
 async function bootstrap() {
-  const appConfig = config().app;
+	const appConfig = config().app;
 	const port = appConfig.port;
 	const app = await NestFactory.create(AppModule);
 	const swaggerConfig = new DocumentBuilder()
