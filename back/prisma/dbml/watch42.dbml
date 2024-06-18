@@ -1,0 +1,17 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Project "Watch42" {
+  database_type: 'PostgreSQL'
+  Note: 'Watch42 DBML file'
+}
+
+Table users {
+  id Int [pk, increment]
+  login String [unique, not null]
+  avatar String [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  last_login DateTime [default: `now()`, not null]
+}
